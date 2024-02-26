@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./mahjongGame.css";
 import TilesComponent from "./TilesComponent";
 import { useNavigate } from "react-router-dom";
@@ -43,16 +43,6 @@ const BoardComponent = () => {
     setTimer(0);
   };
 
-  const navigateSuccesspage = () => {
-    const boolValue = tiles.every((tile) => tile.display === true);
-
-    if (boolValue) {
-      localStorage.setItem("score", score);
-      localStorage.setItem("timer", formattedTimer());
-      navigate("/user/success");
-    }
-  };
-
   const handleDisplay = (singleTile) => {
     if (flippedTiles.length < 2) {
       const updatedTiles = tiles.map((tile) =>
@@ -78,9 +68,31 @@ const BoardComponent = () => {
     initialTiles();
   }, []);
 
+  const formattedTimer = useCallback(
+    () => {
+      const minutes = Math.floor(timer / 60)
+        .toString()
+        .padStart(2, "0");
+      const seconds = Math.floor(timer % 60)
+        .toString()
+        .padStart(2, "0");
+      return `${minutes}:${seconds}`;
+    },
+    [timer] 
+  );
+
   useEffect(() => {
     const displayInterval = setTimeout(() => {
       if (flippedTiles.length === 2) {
+        const navigateSuccesspage = () => {
+          const boolValue = tiles.every((tile) => tile.display === true);
+
+          if (boolValue) {
+            localStorage.setItem("score", score);
+            localStorage.setItem("timer", formattedTimer());
+            navigate("/user/success");
+          }
+        };
         const matching = flippedTiles[0].emoji === flippedTiles[1].emoji;
         if (!matching) {
           setTiles((prevTiles) =>
@@ -99,20 +111,8 @@ const BoardComponent = () => {
       }
     }, 500);
 
-    console.log(score);
-
     return () => clearTimeout(displayInterval);
-  }, [flippedTiles]);
-
-  const formattedTimer = () => {
-    const minutes = Math.floor(timer / 60)
-      .toString()
-      .padStart(2, "0");
-    const seconds = Math.floor(timer % 60)
-      .toString()
-      .padStart(2, "0");
-    return `${minutes}:${seconds}`;
-  };
+  }, [flippedTiles, score, tiles, navigate, formattedTimer]);
 
   return (
     <>

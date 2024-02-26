@@ -10,16 +10,19 @@ const TilesComponent = (props) => {
   console.log("Child Component");
   return (
     <>
-      {tiles.map((tile, index) => (
-        <button
-          key={index}
-          className={`tile ${tile.display ? 'rotate': ''}`}
-          onClick={() => handleTile(tile)}
-          style={{cursor: tile.display ?"none" : "pointer"}}
-        >
-          {tile.display ? tile.emoji : null}
-        </button>
-      ))}
+      {tiles.map((tile, index) => {
+        console.log("Child Button");
+        return (
+          <button
+            key={index}
+            className={`tile ${tile.display ? "rotate" : ""}`}
+            onClick={() => handleTile(tile)}
+            style={{ cursor: tile.display ? "none" : "pointer" }}
+          >
+            {tile.display ? tile.emoji : null}
+          </button>
+        );
+      })}
     </>
   );
 };
