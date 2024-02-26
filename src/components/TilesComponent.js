@@ -7,11 +7,9 @@ const TilesComponent = (props) => {
     handleDisplay(tile);
   };
 
-  console.log("Child Component");
   return (
     <>
       {tiles.map((tile, index) => {
-        console.log("Child Button");
         return (
           <button
             key={index}
